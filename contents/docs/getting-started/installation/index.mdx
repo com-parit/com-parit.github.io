@@ -1,0 +1,57 @@
+---
+title: Installation
+description: Installation guide for our application.
+---
+
+Setting up Comparit is straightforward.
+
+## System Requirements:
+- 1GB RAM (without semantic comparator) | 1.5GB RAM (with semantic comparator)
+- Docker version 27.3.1
+- Docker Compose version v2.29.7
+
+
+## Launch Containers
+<Stepper>
+  <StepperItem title="Step 1: Setup docker-compose file">
+    Begin by creating a docker-compose file in a fresh directory:
+
+    ```yml
+    version: '3.8'
+
+    services:
+      comparit-syntactic:
+        image: jawad571/comparit-syntactic:2.0.0
+        ports:
+          - "8080:8080"
+
+      comparit-semantic:
+        image: jawad571/comparit-semantic:1.0.0
+        ports:
+          - "9090:9090"
+        environment:
+          - EMBEDDING_MODEL=glove
+      user-interface:
+        image: jawad571/comparit-user-interface:1.0.0
+        ports:
+          - "8501:8501"
+        environment:
+          - COMPARIT_SYNTACTIC_URL=http://comparit-syntactic:8080
+          - COMPARIT_SEMANTIC_URL=http://comparit-semantic:9090
+    ```
+  </StepperItem>
+
+  <StepperItem title="Step 2: Start Containers">
+    ```bash
+    sudo docker-compose up
+    ```
+  </StepperItem>
+
+  <StepperItem title="Step 3: Access The User Interface">
+    ```
+    http://localhost:8501
+    ```
+  </StepperItem>
+</Stepper>
+
+With this setup, you’ll have a ready-to-use Comparit containers to start playing with.

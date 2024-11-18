@@ -1,0 +1,46 @@
+---
+title: Introduction
+---
+
+Welcome to **Comparit**! An IDE-agnostic **Domain Model** comparison tool. 
+
+Model comparison or model differencing is the process of comparing [software models](/docs/getting-started/concepts/#what-are-software-models) and reporting the degree of similarity between them. Model Comparison tools are used in the field of Model Driven Engineering and Model
+Driven Reverse Engineering to gain insights and perform analysis on software systems.
+
+
+##  Open Source Philosophy
+
+Comparit is an open-source tool developed for the community, inspired by the spirit of a famous quote from Linus Torvalds, the creator of Linux and Git.
+<blockquote className="quote">
+    I often compare open source to science. Science took this whole notion of developing ideas in the open and improving on other peoples' ideas. It made science what it is today and made the incredible advances that we have had possible. And I compare that to witchcraft and alchemy, where openness was something you didn't do. - Linus Torvalds
+</blockquote>
+
+<Note title="Contribute"> 
+ Interested in helping us improve? Check out our [GitHub repository](https://github.com/com-parit/model-comparator) to get started! From feature suggestions to bug fixes, all contributions are welcome.
+</Note>
+
+## Project Overview
+
+The **Comparit** suite provides syntactic and semantic model comparison APIs; accessible via light-weight containers. Key features include:
+
+- **Syntactic Model Comparison:** Compare Ecore/UML2 models syntactically (irrespective of the order of elements in a model file).
+- **Semantic Model Comparison:** Designed with a minimalist ShadCN-inspired theme that’s easy to style.
+
+### Other Features
+
+| **Feature**                   | **Description**                                          |
+|-------------------------------|----------------------------------------------------------|
+| Ecore to UML2                 | Convert Ecore Models to UML2.                            |
+| UML2 to Ecore                 | Convert UML2 Models to Ecore.                            |
+| Emfatic to Ecore              | Convert Emfatic Models to Ecore.                         |
+| Ecore to Emfatic              | Convert Ecore Models to Emfatic.                         |
+
+
+## Technology & Libraries
+
+Comparit is a mult-container application that has been orchestrated through docker-compose. The technologies used are:
+
+- **Java Springboot** - For the syntactic comparator API.
+- **Flask** - For the semantic comparator API.
+- **Streamlit** - For the User Interface.
+- **docker-compose** - For container orchestration
