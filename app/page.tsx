@@ -15,7 +15,7 @@ export default function Home() {
       </h1>
       </div>
       <p className="mb-8 sm:text-xl max-w-[800px] text-muted-foreground">
-        An IDE-agnostic domain model comparison tool
+        An IDE-agnostic domain model comparison framework
       </p>
       <div className="flex flex-row items-center gap-5">
         <Link

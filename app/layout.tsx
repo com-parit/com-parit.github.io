@@ -10,7 +10,7 @@ export const metadata: Metadata = {
   title: "Comparit",
   // metadataBase: new URL("https://ariadocs.vercel.app/"),
   description:
-    "An IDE Agnostic Model Comparison Tool.",
+    "An IDE Agnostic Model Comparison Framework.",
 };
 
 export default function RootLayout({
