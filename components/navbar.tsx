@@ -78,10 +78,10 @@ export function Navbar() {
 
 export function Logo() {
   return (
-    <Link href="/" className="flex items-center gap-2.5">
+    <Link href="/" className="flex items-center gap-2">
       {/* <CommandIcon className="w-6 h-6 text-muted-foreground" strokeWidth={2} /> */}
       <Image src="/comparit_logo.svg" width={25} height={25} alt="logo"/>
-      <h2 className="text-md font-bold font-code">Comparit</h2>
+      <h2 className="text-[17px] font-bold font-code">Comparit</h2>
     </Link>
   );
 }

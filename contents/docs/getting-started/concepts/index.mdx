@@ -28,3 +28,117 @@ versioning. Additionally, semantic comparison of models could automate the
 grading of software based assignments in academia; extracted models from
 the student’s work could be compared with the benchmark models to check
 the validity.
+
+## Algorithms
+The tool provides an an abstract java class that could be extended to
+implement an algorithm of choice. The instance of the algorithm of choice is
+created and used to compare models as represented abstractly in Pseudocode 1.
+
+### Pseudocode 1
+<img src="/compare_modles_uing_algo_of_choice.png" alt="Image alt" />
+
+The compareModels function expects a hashmap (config) that contains information about the granularity of comparison and choice of algorithm. The
+hashmap can contain the configuration variables listed in the table below.
+
+### Configuration Table
+| **Property** | **Type** | **Default Value** | **Description** |
+|--------------|-----------|-------------------|-----------------|
+| USE-HASHING | boolean | true | Whether to use hashing in the comparison |
+| INCLUDE-DEPENDENCIES | boolean | true | Whether to include dependencies in the comparison |
+| MODEL-LEVEL-COMPARISON-DERIVED-FROM-CLASS-LEVEL-COMPARISON | boolean | true | Model-level comparison derived from class-level comparison. If false, elements will be compared on model level |
+| HASHING-THRESHOLD | number | 0.5 | The threshold for hashing similarity |
+| INCLUDE-ENUMS | boolean | true | Whether to include enums in the comparison |
+| INCLUDE-ENUM-NAME | boolean | true | Whether to include enum names in the comparison |
+| INCLUDE-CLASS-ATTRIBUTES | boolean | true | Whether to include class attributes in the comparison |
+| INCLUDE-CLASS-OPERATIONS | boolean | true | Whether to include class operations in the comparison |
+| INCLUDE-CLASS-PARAMETERS | boolean | true | Whether to include class parameters in the comparison |
+| INCLUDE-CLASS-REFERENCES | boolean | true | Whether to include class references in the comparison |
+| INCLUDE-CLASS-SUPERTYPES | boolean | true | Whether to include class supertypes in the comparison |
+| INCLUDE-ATTRIBUTE-NAME | boolean | true | Whether to include attribute names in the comparison |
+| INCLUDE-ATTRIBUTE-CONTAINING-CLASS | boolean | true | Whether to include the class containing the attribute in the comparison |
+| INCLUDE-ATTRIBUTE-TYPE | boolean | true | Whether to include attribute types in the comparison |
+| INCLUDE-ATTRIBUTE-LOWER-BOUND | boolean | true | Whether to include attribute lower bounds in the comparison |
+| INCLUDE-ATTRIBUTE-UPPER-BOUND | boolean | true | Whether to include attribute upper bounds in the comparison |
+| INCLUDE-ATTRIBUTE-IS-ORDERED | boolean | true | Whether to include if the attribute is ordered |
+| INCLUDE-ATTRIBUTE-IS-UNIQUE | boolean | true | Whether to include if the attribute is unique |
+| INCLUDE-REFERENCES-NAME | boolean | true | Whether to include reference names in the comparison |
+| INCLUDE-REFERENCES-CONTAINING-CLASS | boolean | true | Whether to include the class containing the reference in the comparison |
+| INCLUDE-REFERENCES-IS-CONTAINMENT | boolean | true | Whether to include if the reference is containment |
+| INCLUDE-REFERENCES-LOWER-BOUND | boolean | true | Whether to include reference lower bounds in the comparison |
+| INCLUDE-REFERENCES-UPPER-BOUND | boolean | true | Whether to include reference upper bounds in the comparison |
+| INCLUDE-REFERENCES-IS-ORDERED | boolean | true | Whether to include if the reference is ordered |
+| INCLUDE-REFERENCES-IS-UNIQUE | boolean | true | Whether to include if the reference is unique |
+| INCLUDE-OPERATION-NAME | boolean | true | Whether to include operation names in the comparison |
+| INCLUDE-OPERATION-CONTAINING-CLASS | boolean | true | Whether to include the class containing the operation in the comparison |
+| INCLUDE-OPERATION-PARAMETERS | boolean | true | Whether to include operation parameters in the comparison |
+| INCLUDE-PARAMETER-NAME | boolean | true | Whether to include parameter names in the comparison |
+| INCLUDE-PARAMETER-TYPE | boolean | true | Whether to include parameter types in the comparison |
+| INCLUDE-PARAMETER-OPERATION-NAME | boolean | true | Whether to include the operation name associated with the parameter in the comparison |
+
+Based on the choice of algorithm, if implemented in the tool, the relevant instance
+of the class is initialized; that instance is named as ”alg”. The function
+”getClassLevelMetrics” is called that uses the instance of the algorithm to
+compute the ven diagram for each of the elements of the model. The ven
+diagram provides information about the true positives, false positives, and
+false negatives. if the MODEL-LEVEL-COMPARISON-DERIVED-FROM-
+CLASS-LEVEL-COMPARISON configuration variable (refer to configuration table) is set to True then the classLevelMetrics and the Ven Diagram
+for enumerations (computed separately because they are present at the root
+of the model instead of being part of a class), are used to generate the the
+model level metrics; else, the model level metrics are generated by comparing model elements on model level. We have not described the functions ”get-
+ConfusionMatrixForAllElements()” and ”getMLM(clm, VDEnum”)because
+they are trivial.
+
+## Hashing Based Algorithm
+The hashing based algorithm has been implemented as an extension of the
+abstract model comparison class. The inspiration for this algorithm
+comes from the [Xiao He’s paper](https://www.researchgate.net/publication/380177673_Accelerating_similarity-based_model_matching_using_dual_hashing); an extension of EMF-Compare. Our
+algorithm computes the venn diagrams for each of the following elements;
+classes, references, attributes, operations, superTyes, and Enums. VennDiagram is a data structure (implemented as a DTO (Data Transfer Object))
+containing a triple such that:
+Venn Diagram = (onlyInModel1, intersection, onlyInModel2)
+The pseudocode in Pseudocode 2 details the steps to compute the venn diagrams provided
+with two arrays of the same types of elements. At first, a hash value of each of
+the elements is computed, which is use to index the element. This is followed
+by finding pairs of elements that have the maximum similarity score; these
+pairs are included in the intersection section of the venn diagram. For the
+elements in model 1 that were not paired with any element in model 2; are
+included in the set of elements only in model 1, and vice versa.
+The algorithm used to compute similarity is detailed in Pseudocode 3.
+The ”computeSimilarity” function computes a dot product of the two hash
+values. It expects the hash to be a 64 bit binary value. The usage of this
+function can be seen in Pseudocode 2. The ”computeHash” function takes
+input an element and computes a sum of the hash values of each of its
+features. The function ”getHashValue” is ued to compute a 64 bit binary
+hash of each individual feature in the element. If the feature is a text-based
+feature then the ”hashNGram” function is used to compute the 64 bit binary
+hash for that feature value. This technique is inspired from the ”hashNGram”
+function proposed by Xiao He. The hashNGram function breaks the
+string into bi-grams and for each bi-gram computes a 64 bit binary hash; these
+hash values are summed up to get a 64-bit hash value for the feature. We
+have introduced a variation to accommodate for classes that are composed of only 1 letter, for example ”public class A ”. We have added an if condition
+to check if such is the case, then the hashCode for that letter is returned
+instead of computing the bigrams.
+
+### Pseudocode 2
+<img src="/get_venn_algo.png" alt="venn"/>
+
+### Pseudocode 3
+<img src="/semantic_sim_algo.png" alt="venn"/>
+This algorithm defines a class SemanticSimilarity to compute the semantic
+similarity between two emfatic files. The process begins by extracting and
+tokenizing text from the given code using NLTK, then removes packages,
+namespace declaration and comments. Package declerations are removed
+because the focus of the tools is to find semantic similarity between class
+diagrams; it is not necessary for the two models to have the same package
+structure for them to be semantically similar. The algorithm tokenizes the
+remaining text and converts it into a list of tokens. Then, it uses TF-IDF
+(Term Frequency-Inverse Document Frequency) to calculate the importance
+of each word in the documents and obtains word embeddings using pre-
+trained Word2Vec vectors from the GoogleNews-vectors-negative300 word
+embedding model. We have provided support for 2 models; glove6b50d and
+GoogleNews-vectors-negative300 that can be configured from the environ-
+ment variable of the api. These embeddings are weighted by the TF-IDF
+scores to get a weighted average embedding for each document. Finally, the
+cosine similarity between the embeddings of the original and predicted code
+files is computed to determine their semantic similarity, which is then re-
+turned as a score.

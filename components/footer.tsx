@@ -27,9 +27,9 @@ export function Footer() {
           </p>
         </div>
 
-        <div className="gap-4 items-center hidden md:flex">
+        {/* <div className="gap-4 items-center hidden md:flex">
           <FooterButtons />
-        </div>
+        </div> */}
       </div>
     </footer>
   );

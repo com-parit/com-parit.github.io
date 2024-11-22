@@ -10,7 +10,7 @@ export default function Home() {
       
       <div className="flex flex-row mb-4 items-center">
       <Image src="/comparit_logo.svg" width={60} height={60} alt="logo"/>
-      <h1 className="pl-[20px] text-3xl font-bold sm:text-6xl items-center">
+      <h1 className="pl-[12px] text-3xl font-bold sm:text-6xl items-center">
         Comparit
       </h1>
       </div>
